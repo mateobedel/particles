@@ -5,13 +5,13 @@ LIB_DIR = lib
 OBJ_DIR = obj
 BIN = bin/program
 
-SRCS = $(wildcard $(SRC_DIR)/*.cpp)
-OBJS = $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRCS))
+SRCS = $(wildcard $(SRC_DIR)/*.cxx)
+OBJS = $(patsubst $(SRC_DIR)/%.cxx, $(OBJ_DIR)/%.o, $(SRCS))
 
 $(BIN): $(OBJS)
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp | $(OBJ_DIR)
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cxx | $(OBJ_DIR)
 	$(CXX) $(CXXFLAGS) -I$(LIB_DIR) -c $< -o $@
 
 $(OBJ_DIR):
