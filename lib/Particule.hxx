@@ -9,18 +9,16 @@ class Particule {
         float masse; 
         Vecteur position;          
         Vecteur vitesse;
-        std::string identifiant;
+        int id;
 
         Vecteur force;
         std::string categorie;    
     public:
         Particule() = default;
-
-        Particule(float m, Vecteur pos, Vecteur vit, std::string id) : 
-        masse(m),  position(pos), vitesse(vit), identifiant(id) {};
+        Particule(float m, Vecteur pos, Vecteur vit) : 
+        masse(m),  position(pos), vitesse(vit) {};
 
         float getMasse() { return masse; }
-        std::string getIdentifiant() { return identifiant; }
         Vecteur getPosition() { return position; }
         Vecteur getVitesse() { return vitesse; }
         void setPosition(const Vecteur& newPos) { position = newPos; }
