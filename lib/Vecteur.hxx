@@ -15,6 +15,9 @@ struct Vecteur {
 
         float norm();
 
+        //Affectation par copie
+        Vecteur& operator=(const Vecteur& v);
+    
         //Operations entre vecteurs :
         Vecteur operator +(const Vecteur& v);
         Vecteur operator -(const Vecteur& v);
@@ -32,6 +35,13 @@ struct Vecteur {
         Vecteur operator -(const float f);
         Vecteur operator *(const float f);
         Vecteur operator /(const float f);
+
+        //Modifications d'un vecteur avec float
+        Vecteur& operator +=(const float f);
+        Vecteur& operator -=(const float f);
+        Vecteur& operator *=(const float f);
+        Vecteur& operator /=(const float f);
+
 };
 
 //Operateurs externe entre scalaire et vecteur (et print)
@@ -39,4 +49,6 @@ Vecteur operator +(const float f, const Vecteur& v);
 Vecteur operator -(const float f, const Vecteur& v);
 Vecteur operator *(const float f, const Vecteur& v);
 Vecteur operator /(const float f, const Vecteur& v);
+
+
 std::ostream& operator<<(std::ostream& os, const Vecteur& v);

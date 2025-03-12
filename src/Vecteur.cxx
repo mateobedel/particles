@@ -11,6 +11,13 @@ float Vecteur::norm() {
 }
 
 //Operations entre vecteurs :
+
+Vecteur& Vecteur::operator=(const Vecteur& v) {
+    x = v.x;
+    y = v.y;
+    z = v.z;
+    return *this;
+}
 Vecteur Vecteur::operator +(const Vecteur& v) {
     return Vecteur(x+v.x, y+v.y, z+v.z);
 }
@@ -53,6 +60,34 @@ Vecteur& Vecteur::operator /=(const Vecteur& v) {
     x /= v.x;
     y /= v.y;
     z /= v.z;
+    return *this;
+}
+
+Vecteur& Vecteur::operator +=(const float f) {
+    x += f;
+    y += f;
+    z += f;
+    return *this;
+}
+
+Vecteur& Vecteur::operator -=(const float f) {
+    x -= f;
+    y -= f;
+    z -= f; 
+    return *this;
+}
+
+Vecteur& Vecteur::operator *=(const float f) {
+    x *= f;
+    y *= f;
+    z *= f;
+    return *this;
+}
+
+Vecteur& Vecteur::operator /=(const float f) {
+    x /= f;
+    y /= f;
+    z /= f;
     return *this;
 }
 

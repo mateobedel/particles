@@ -19,8 +19,8 @@ class Particule {
         masse(m),  position(pos), vitesse(vit) {};
 
         float getMasse() { return masse; }
-        Vecteur getPosition() { return position; }
-        Vecteur getVitesse() { return vitesse; }
+        Vecteur& getPosition() { return position; }
+        Vecteur& getVitesse() { return vitesse; }
         void setPosition(const Vecteur& newPos) { position = newPos; }
         void setVitesse(const Vecteur& newVit) { vitesse = newVit; }
     

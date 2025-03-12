@@ -9,7 +9,8 @@
 
 int main() {
 
-    Univers univ = Univers(3,32768);
+    Univers univ = Univers(3,128);
+    univ.StromerVerlet(100,1);
 
     return 0;
 }
