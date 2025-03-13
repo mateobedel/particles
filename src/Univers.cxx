@@ -10,8 +10,11 @@ Univers::Univers(int n, int nb_p, Vecteur l, float r){
     rcut = r;
 
     //Grille des cellules
-    Vecteur ncd = (Ld/rcut);
-    
+    ncd = (Ld/rcut).floor();
+    if (dimension==1) cellules.resize(ncd.x*ncd.y*ncd.z);
+    else if (dimension==2) cellules.resize(ncd.x*ncd.y);
+    else cellules.resize(ncd.x*ncd.y*ncd.z);
+    setupVoisin();
 
 
     //Distribution aléatoire uniforme sur [0,1]
@@ -30,6 +33,68 @@ Univers::Univers(int n, int nb_p, Vecteur l, float r){
 }
 
 
+int Univers::getCellIndex(int x, int y, int z) {
+    if (dimension==1) return x;
+    if (dimension==2) return x + (int)ncd.x * y;
+    return x + (int)ncd.x * (y + (int)ncd.y * z);
+}
+
+
+void Univers::setupVoisin() {
+    if (dimension==1) {
+        for (int i = 0; i < ncd.x; i++) {
+            for (int di = -1; di <= 1; di++)  {
+                int ni = i+di;
+                if (ni<0 || ni>=(int)ncd.x) continue;
+                cellules[getCellIndex(i,0,0)].voisins.push_back(&cellules[getCellIndex(ni,0,0)]);
+            }
+        }
+    } else if (dimension==2) {
+        for (int i = 0; i < ncd.x; i++) {
+        for (int j = 0; j < ncd.y; j++) {
+            for (int di = -1; di <= 1; di++)  {
+            for (int dj = -1; dj <= 1; dj++)  {
+                int ni = i+di; 
+                int nj = j+dj;
+                if (ni<0 || ni>=(int)ncd.x || nj<0 || nj>=(int)ncd.y) continue;
+                cellules[getCellIndex(i,j,0)].voisins.push_back(&cellules[getCellIndex(ni,nj,0)]);
+            }  
+            }
+        }
+        }
+    } else {
+        for (int i = 0; i < ncd.x; i++) {
+        for (int j = 0; j < ncd.y; j++) {
+        for (int k = 0; k < ncd.z; k++) {
+            for (int di = -1; di <= 1; di++)  {
+            for (int dj = -1; dj <= 1; dj++)  {
+            for (int dk = -1; dk <= 1; dk++)  {
+                int ni = i+di; 
+                int nj = j+dj;
+                int nk = k+dk;
+                if (ni<0 || ni>=(int)ncd.x || nj<0 || nj>=(int)ncd.y || nk<0 ||nk>=(int)ncd.z) continue;
+                cellules[getCellIndex(i,j,k)].voisins.push_back(&cellules[getCellIndex(ni,nj,nk)]);
+            }  
+            }
+            }
+        }
+        }
+        }
+    }
+}
+
+void Univers::updateCellulePart(int i, int j, int k, Particule& p) {
+    Vecteur ind = (p.getPosition()/Ld).floor();
+
+    //La particule n'a pas changée de cellule
+    if ((int)ind.x == i && (int)ind.y == j && (int)ind.z == k) return;
+
+    cellules[getCellIndex(i,j,k)].particules.erase(std::remove_if(particles.begin(), particles.end(),
+    [&](const Particule& part) { return part.id == p.id; }), particles.end());
+
+
+}
+
 
 float Univers::calcPotLennardJones(int i, int j) {
 
@@ -47,7 +112,6 @@ float Univers::calcPotLennardJones(int i, int j) {
 }
 
 
-
 Vecteur Univers::calcForceInteractionGrav(int i, int j) {
 
     Particule& pi = particules[i];
@@ -61,10 +125,6 @@ Vecteur Univers::calcForceInteractionGrav(int i, int j) {
     
     return r_ij * (pi.getMasse() * pj.getMasse()) / (norm_rij*norm_rij*norm_rij) ;
 }
-
-
-
-
 
 
 void Univers::calcAllForcesGrav(std::vector<Vecteur>& forces) {

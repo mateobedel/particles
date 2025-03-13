@@ -20,9 +20,12 @@ class Univers {
         int dimension;
         Vecteur Ld; //Longueur caractéristique
         float rcut; //Rayon de coupe
+        Vecteur ncd;
 
         int nb_particules;
         std::vector<Particule> particules;
+
+        std::vector<Cellule> cellules;
 
         //Mersenne twister
         std::mt19937 mt;
@@ -43,6 +46,10 @@ class Univers {
         //Algorithme de Stromer-Verlet
         void StromerVerlet(float t_end, float delta_t);
     
+        int getCellIndex(int x, int y, int z);
 
+        void setupVoisin();
+
+        void updateCellulePart(int i, int j, int k, Particule& p);
     
 };

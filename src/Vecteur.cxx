@@ -2,6 +2,7 @@
 #include <vector>
 #include <iostream>
 #include <cmath>
+#include <algorithm>
 
 #include "Vecteur.hxx"
 
@@ -127,5 +128,12 @@ Vecteur operator /(const float f, const Vecteur& v) {
 
 std::ostream& operator<<(std::ostream& os, const Vecteur& v) {
     return os << "(" << v.x << ", " << v.y << ", " << v.z << ")";
+}
 
+ Vecteur Vecteur::floor() {
+    return Vecteur((int)x, (int)y, (int)z);
+}
+
+Vecteur Vecteur::min(const float f) {
+    return Vecteur(std::min(x, f),std::min(y, f),std::min(z, f));
 }
