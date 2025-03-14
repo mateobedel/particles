@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -Wall -Wextra -std=c++17
+CXXFLAGS = -Wall -Wextra -std=c++17 -g -fsanitize=address,undefined
 SRC_DIR = src
 LIB_DIR = lib
 OBJ_DIR = obj
@@ -23,5 +23,8 @@ clean:
 
 run: $(BIN)
 	./$(BIN)
+
+visu: $(BIN)
+	./$(BIN) > p.data && python3 visu.py
 
 .PHONY: clean

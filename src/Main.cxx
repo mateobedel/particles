@@ -9,7 +9,7 @@
 
 int main() {
 
-    Univers univ = Univers(3,128);
+    Univers univ = Univers(3, 1000, Vecteur(250,250,250), 2.5);
     univ.StromerVerlet(100,1);
 
     return 0;

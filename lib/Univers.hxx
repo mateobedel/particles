@@ -17,13 +17,16 @@ class Univers {
 
     private:
 
+        //Constantes de l'univers
+        const float epsilon = 1.0f;
+        const float sigma = 1.0f;
+
+        //Caractéristiqu de l'univers
         int dimension;
         Vecteur Ld; //Longueur caractéristique
         float rcut; //Rayon de coupe
-        Vecteur ncd;
-
+        int ncd_x, ncd_y, ncd_z;
         int nb_particules;
-        std::vector<Particule> particules;
 
         std::vector<Cellule> cellules;
 
@@ -35,21 +38,25 @@ class Univers {
         Univers(int n, int nb_p, Vecteur l, float r);
 
         //Calcule la force d'interaction gravitationelle (0 si i et j sont superposées)
-        Vecteur calcForceInteractionGrav(int id_i, int id_j);
+        Vecteur calcForceInteractionGrav(Cellule& c_i, Cellule& c_j, int id_i, int id_j);
 
-        //Calcule le potentiel de Lennard-Jones entre deux particules
-        float calcPotLennardJones(int i, int j);
+        //Calcule la force de potentiel (0 si i et j sont superposées)
+        Vecteur calcForceInteractionPot(Cellule& c_i, Cellule& c_j, int i, int j);
 
-        //Calcule les forces gravitationelles de toute les particules
-        void calcAllForcesGrav(std::vector<Vecteur>& forces);
+        //Calcule les forces de toute les particules
+        void calcAllForces(std::vector<Vecteur>& forces, Cellule& cell);
 
         //Algorithme de Stromer-Verlet
         void StromerVerlet(float t_end, float delta_t);
     
-        int getCellIndex(int x, int y, int z);
+        int getCellLinearIndex(int x, int y, int z);
+
+        void addParticule(Particule& p);
+
+        void removeParticule(int cellInd, Particule& p);
 
         void setupVoisin();
 
-        void updateCellulePart(int i, int j, int k, Particule& p);
+        void updateCellulePart(int c, int i);
     
 };
