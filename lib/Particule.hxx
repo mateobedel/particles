@@ -11,9 +11,12 @@ class Particule {
         Vecteur vitesse;
         int id;
 
-        Vecteur force;
         std::string categorie;    
     public:
+
+        Vecteur force;
+        Vecteur force_old;
+
         Particule(float m, Vecteur pos, Vecteur vit) : 
         masse(m),  position(pos), vitesse(vit) {
             static int glob_id = 0;

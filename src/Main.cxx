@@ -9,8 +9,8 @@
 
 int main() {
 
-    Univers univ = Univers(3, 1000, Vecteur(250,250,250), 2.5);
-    univ.StromerVerlet(100,1);
+    Univers univ = Univers(2, 10000, Vecteur(16.0f,64.0f,0.0f), 2.5, 5, 1);
+    univ.StromerVerlet(.1f,.001f);
 
     return 0;
 }

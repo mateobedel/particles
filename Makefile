@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -Wall -Wextra -std=c++17 -g -fsanitize=address,undefined
+CXXFLAGS = -Wall -Wextra -std=c++17 -g
 SRC_DIR = src
 LIB_DIR = lib
 OBJ_DIR = obj

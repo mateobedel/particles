@@ -11,6 +11,7 @@
 struct Cellule {
     std::vector<Particule> particules;
     std::vector<Cellule*> voisins;
+    Vecteur position;
 };
 
 class Univers {
@@ -18,8 +19,8 @@ class Univers {
     private:
 
         //Constantes de l'univers
-        const float epsilon = 1.0f;
-        const float sigma = 1.0f;
+        float epsilon;
+        float sigma;
 
         //Caractéristiqu de l'univers
         int dimension;
@@ -35,7 +36,7 @@ class Univers {
 
     public:
 
-        Univers(int n, int nb_p, Vecteur l, float r);
+        Univers(int n, int nb_p, Vecteur l, float r, float eps, float sigm);
 
         //Calcule la force d'interaction gravitationelle (0 si i et j sont superposées)
         Vecteur calcForceInteractionGrav(Cellule& c_i, Cellule& c_j, int id_i, int id_j);
@@ -43,20 +44,25 @@ class Univers {
         //Calcule la force de potentiel (0 si i et j sont superposées)
         Vecteur calcForceInteractionPot(Cellule& c_i, Cellule& c_j, int i, int j);
 
-        //Calcule les forces de toute les particules
-        void calcAllForces(std::vector<Vecteur>& forces, Cellule& cell);
+        //Calcule les forces de toute les particules de la cellule cell
+        void calcCellForces(Cellule& cell);
 
         //Algorithme de Stromer-Verlet
         void StromerVerlet(float t_end, float delta_t);
     
+        //Calcul l'index linéaire d'une cellule en fonction de ses index 3D (ou 2D ou 1D)
         int getCellLinearIndex(int x, int y, int z);
 
-        void addParticule(Particule& p);
+        //Ajoute une particule à la bonne cellule
+        void addParticle(Particule& p);
 
-        void removeParticule(int cellInd, Particule& p);
+        //Initialise les voisins de chaques cellules
+        void setupNeighbours();
 
-        void setupVoisin();
+        //Mets à jour la bonne cellule en fonction de la position d'une particule i
+        void updateCellPart(int c, int i);
 
-        void updateCellulePart(int c, int i);
+        //Affiche toute les particules de toute les cellules (id:Position)
+        void printCells();
     
 };
