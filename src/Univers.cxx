@@ -2,6 +2,8 @@
 #include <algorithm>
 #include <iostream>
 
+#include "VTKWriter.hxx"
+
 
 Univers::Univers(int n, int nb_p, Vecteur l, float r, float eps, float sigm){
             
@@ -128,7 +130,6 @@ void Univers::updateCellPart(int c, int i) {
     (dimension >= 2 && (p.getPosition().y < 0 || p.getPosition().y >= ncd_y*rcut)) ||
     (dimension >= 3 && (p.getPosition().z < 0 || p.getPosition().z >= ncd_z*rcut))) {
         cellules[c].particules.erase(cellules[c].particules.begin() + i);
-
         return;
     }
 
@@ -195,7 +196,7 @@ void Univers::calcCellForces(Cellule& cell) {
                 if (cell.particules[i].getId() == cellNeigh->particules[j].getId()) continue;
 
                 //Calcul de la force entre p_i et ses voisines p_j
-                cell.particules[i].force += calcForceInteractionGrav(cell, *cellNeigh, i, j);
+                cell.particules[i].force += calcForceInteractionPot(cell, *cellNeigh, i, j);
                                             
             }
         }
@@ -222,10 +223,9 @@ void Univers::StromerVerlet(float t_end, float delta_t) {
     for (size_t c = 0; c < cellules.size(); c++) 
         calcCellForces(cellules[c]);
     
+    VTKWriter::write("p.vtk", *this);
 
     while (t < t_end) {
-        
-        printCells();
         
         //Calcul des positions
         for (size_t c = 0; c < cellules.size(); c++) {

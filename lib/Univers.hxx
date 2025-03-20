@@ -64,5 +64,14 @@ class Univers {
 
         //Affiche toute les particules de toute les cellules (id:Position)
         void printCells();
-    
+
+
+        int getNbParticule() {
+            int somme = 0;
+            for(size_t c = 0; c < cellules.size(); c++) somme += cellules[c].particules.size();
+            return somme;
+        };
+        
+        int getDimension() {return dimension;};
+        std::vector<Cellule> getCells() {return cellules;};
 };
