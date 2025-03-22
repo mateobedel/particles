@@ -12,10 +12,11 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(googletest)
 
-
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-error")
 
 # Créer un exécutable pour les tests
 add_executable(test_vecteur test_vecteur.cxx)
+
 
 # Lier l'exécutable des tests avec GoogleTest et les sources du projet
 target_link_libraries(test_vecteur gtest_main src)

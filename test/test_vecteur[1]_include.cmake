@@ -1,5 +1,5 @@
-if(EXISTS "/user/4/prudhoab/2A/S2/C++/particles/test/test_vecteur[1]_tests.cmake")
-  include("/user/4/prudhoab/2A/S2/C++/particles/test/test_vecteur[1]_tests.cmake")
+if(EXISTS "/home/abel/particles/test/test_vecteur[1]_tests.cmake")
+  include("/home/abel/particles/test/test_vecteur[1]_tests.cmake")
 else()
   add_test(test_vecteur_NOT_BUILT test_vecteur_NOT_BUILT)
 endif()

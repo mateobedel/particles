@@ -1,4 +1,4 @@
-# Install script for directory: /user/4/prudhoab/2A/S2/C++/particles/test
+# Install script for directory: /home/abel/particles/test
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -44,7 +44,7 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/user/4/prudhoab/2A/S2/C++/particles/_deps/googletest-build/cmake_install.cmake")
+  include("/home/abel/particles/_deps/googletest-build/cmake_install.cmake")
 
 endif()
 
