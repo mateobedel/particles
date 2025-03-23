@@ -1,18 +1,24 @@
-# CMakeLists.txt dans le répertoire src/
-
-# Ajouter des fichiers sources pour la bibliothèque ou l'exécutable
-# Si tu as plusieurs fichiers sources, tu peux les lister ici.
-add_library(src
+# Créer la bibliothèque 'src' (sans Main.cxx)
+add_library(src STATIC
+    Univers.cxx
     Vecteur.cxx
-    Main.cxx
+    VTKWriter.cxx
 )
 
-# Cible principale si tu veux un exécutable
+# Créer l'exécutable MonProjet (avec Main.cxx)
 add_executable(MonProjet Main.cxx)
 
-# Lier l'exécutable aux bibliothèques ou objets nécessaires
-target_link_libraries(MonProjet src)
+# Lier les dépendances
+target_link_libraries(MonProjet PRIVATE src lib)
 
-target_include_directories(src PUBLIC ${CMAKE_SOURCE_DIR}/src)
+# Inclure les répertoires des en-têtes
+target_include_directories(src PUBLIC
+    ${CMAKE_SOURCE_DIR}/lib   # Pour les .hxx dans lib/
+    ${CMAKE_SOURCE_DIR}/src   # Pour les .hxx dans src/
+)
 
-include_directories(${CMAKE_SOURCE_DIR}/lib)
+# Inclure les en-têtes pour l'exécutable
+target_include_directories(MonProjet PRIVATE
+    ${CMAKE_SOURCE_DIR}/lib
+    ${CMAKE_SOURCE_DIR}/src
+)
