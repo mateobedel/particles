@@ -63,7 +63,7 @@ Univers::Univers(int n, int nb_p, Vecteur l, float r, float eps, float sigm){
     for(int i = 0; i < 160; i++) {
         for(int j = 0; j < 40; j++) {
             float ecart = 1.0f/64.0f;
-            float start_x = 0.0f;
+            float start_x = 8.0f;
             float start_y = 32.0f;
             Particule p = Particule(1, Vecteur(start_x+ecart*(float)(i),start_y+ecart*(float)j,0), Vecteur(0,0,0));
             addParticle(p);
@@ -133,7 +133,7 @@ void Univers::updateCellPart(int c, int i) {
         return;
     }
 
-
+    
 
     //Calcul de l'id de cellule en fonction de la position de p
     int calc_id = getCellLinearIndex(p.getPosition().x/rcut, p.getPosition().y/rcut, p.getPosition().z/rcut);
@@ -158,9 +158,10 @@ Vecteur Univers::calcForceInteractionPot(Cellule& c_i, Cellule& c_j, int i, int 
     if (norm_rij == 0.0f) 
         return Vecteur(0.0f,0.0f,0.0f);
 
-    float sr6 = std::pow(sigma/norm_rij,6);
+    float sr6 = std::pow(sigma / norm_rij, 6);
+    float force_magnitude = 24.0f * epsilon * sr6 * (1.0f - 2.0f * sr6) / (norm_rij * norm_rij);
     
-    return r_ij * ((1.0f/(norm_rij*norm_rij)) *  sr6 * (1.0f - 2.0f*sr6) * 24.0f * epsilon);
+    return r_ij * (-force_magnitude);
 }
 
 
@@ -188,7 +189,7 @@ void Univers::calcCellForces(Cellule& cell) {
         
         for(Cellule* cellNeigh : cell.voisins) { //Pour toutes les cellules voisines
 
-            if ((cell.particules[i].getPosition() - cell.particules[i].getPosition()).norm() > rcut) 
+            if ((cellNeigh->position - cell.particules[i].getPosition()).norm() > rcut) 
                 continue;
 
             for (size_t j = 0; j < cellNeigh->particules.size(); j++) {  //Pour toute les particules des cellules voisines
@@ -223,9 +224,11 @@ void Univers::StromerVerlet(float t_end, float delta_t) {
     for (size_t c = 0; c < cellules.size(); c++) 
         calcCellForces(cellules[c]);
     
-    VTKWriter::write("p.vtk", *this);
+    //VTKWriter::write("p.vtk", *this);
 
     while (t < t_end) {
+
+        //printCells();
         
         //Calcul des positions
         for (size_t c = 0; c < cellules.size(); c++) {
