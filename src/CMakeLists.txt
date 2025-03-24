@@ -6,10 +6,10 @@ add_library(src STATIC
 )
 
 # Créer l'exécutable MonProjet (avec Main.cxx)
-add_executable(MonProjet Main.cxx)
+add_executable(particules Main.cxx)
 
 # Lier les dépendances
-target_link_libraries(MonProjet PRIVATE src lib)
+target_link_libraries(particules PRIVATE src lib)
 
 # Inclure les répertoires des en-têtes
 target_include_directories(src PUBLIC
@@ -18,7 +18,9 @@ target_include_directories(src PUBLIC
 )
 
 # Inclure les en-têtes pour l'exécutable
-target_include_directories(MonProjet PRIVATE
+target_include_directories(particules PRIVATE
     ${CMAKE_SOURCE_DIR}/lib
     ${CMAKE_SOURCE_DIR}/src
 )
+
+set_target_properties(particules PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
