@@ -1,5 +1,0 @@
-if(EXISTS "/home/abel/particles/test/test_vecteur[1]_tests.cmake")
-  include("/home/abel/particles/test/test_vecteur[1]_tests.cmake")
-else()
-  add_test(test_vecteur_NOT_BUILT test_vecteur_NOT_BUILT)
-endif()

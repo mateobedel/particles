@@ -1,1 +1,0 @@
-/usr/bin/c++  -Wno-error CMakeFiles/test_vecteur.dir/test_vecteur.cxx.o -o test_vecteur  ../lib/libgtest_main.a ../src/libsrc.a ../lib/libgtest.a 
