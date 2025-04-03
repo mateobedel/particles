@@ -24,21 +24,20 @@ void VTKWriter::writeHeader(std::ofstream& file, Univers& univers) {
 
 void VTKWriter::writeParticlesData(std::ofstream& file, Univers& univers) {
 
-    std::vector<Cellule> cellules = univers.getCells();
-
+    std::vector<Particule> particules = univers.getParticules();
 
     //Position
     file << "      <Points>\n";
     file << "        <DataArray name=\"Position\" type=\"Float32\" NumberOfComponents=\"" << univers.getDimension() << "\" format=\"ascii\">\n";
     
-    for(size_t c = 0; c < cellules.size(); c++) {
-        for(size_t i = 0; i < cellules[c].particules.size(); i++) {
-            if (univers.getDimension() == 3) file << cellules[c].particules[i].getPosition();
-            if (univers.getDimension() == 2) file << cellules[c].particules[i].getPosition().x << " " << cellules[c].particules[i].getPosition().y;
-            if (univers.getDimension() == 1) file << cellules[c].particules[i].getPosition().x;
-            if (c != cellules.size()-1) file << " "; 
-        }
+
+    for(size_t i = 0; i < particules.size(); i++) {
+        if (univers.getDimension() == 3) file << particules[i].getPosition();
+        if (univers.getDimension() == 2) file << particules[i].getPosition().x << " " << particules[i].getPosition().y;
+        if (univers.getDimension() == 1) file << particules[i].getPosition().x;
+        if (i != particules.size()-1) file << " ";
     }
+
 
     file << "\n";
     file << "        </DataArray>\n";
@@ -49,29 +48,22 @@ void VTKWriter::writeParticlesData(std::ofstream& file, Univers& univers) {
     file << "      <PointData Vectors=\"vector\">\n";
     file << "        <DataArray type=\"Float32\" Name=\"Velocity\" NumberOfComponents=\"" << univers.getDimension() << "\" format=\"ascii\">\n";
     
-    for(size_t c = 0; c < cellules.size(); c++) {
-        for(size_t i = 0; i < cellules[c].particules.size(); i++) {
-            if (univers.getDimension() == 3) file << cellules[c].particules[i].getVitesse();
-            if (univers.getDimension() == 2) file << cellules[c].particules[i].getVitesse().x << " " << cellules[c].particules[i].getVitesse().y;
-            if (univers.getDimension() == 1) file << cellules[c].particules[i].getVitesse().x;
-            if (c != cellules.size()-1) file << " "; 
-        }
+    for(size_t i = 0; i < particules.size(); i++) {
+        if (univers.getDimension() == 3) file << particules[i].getVitesse();
+        if (univers.getDimension() == 2) file << particules[i].getVitesse().x << " " << particules[i].getVitesse().y;
+        if (univers.getDimension() == 1) file << particules[i].getVitesse().x;
+        if (i != particules.size()-1) file << " "; 
     }
-
     file << "\n";
     file << "        </DataArray>\n";
 
     //Masse
-
     file << "        <DataArray type=\"Float32\" Name=\"Masse\" format=\"ascii\">\n";
 
-    for(size_t c = 0; c < cellules.size(); c++) {
-        for(size_t i = 0; i < cellules[c].particules.size(); i++) {
-            file << cellules[c].particules[i].getMasse();
-            if (c != cellules.size()-1) file << " "; 
-        }
+    for(size_t i = 0; i < particules.size(); i++) {
+        file << particules[i].getMasse();
+        if (i != particules.size()-1) file << " ";
     }
-
     file << "\n";
     file << "        </DataArray>\n";
     file << "      </PointData>\n";

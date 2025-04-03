@@ -60,19 +60,18 @@ class Univers {
         //Initialise les voisins de chaques cellules
         void setupNeighbours();
 
-        //Mets à jour la bonne cellule en fonction de la position d'une particule i
-        void updateCellPart(int c, int i);
+        //Mets à jour la bonne cellule en fonction de l'indice de la liste d'indices des particules
+        void updateCellPart(int c, int ind_p);
 
         //Affiche toute les particules de toute les cellules (id:Position)
         void printCells();
 
 
-        // int getNbParticule() {
-        //     int somme = 0;
-        //     for(size_t c = 0; c < cellules.size(); c++) somme += cellules[c].particules.size();
-        //     return somme;
-        // };
+        int getNbParticule() {
+            return particules.size();
+        };
         
         int getDimension() {return dimension;};
-        std::vector<Cellule> getCells() {return cellules;};
+
+        std::vector<Particule> getParticules() {return particules;};
 };

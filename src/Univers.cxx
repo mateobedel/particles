@@ -121,15 +121,15 @@ void Univers::setupNeighbours() {
 }
 
 
-void Univers::updateCellPart(int c, int i) {
+void Univers::updateCellPart(int c, int ind_p) {
 
-    Particule& p = particules[cellules[c].partInd[i]];
+    Particule& p = particules[cellules[c].partInd[ind_p]];
 
     //Ignorer la particule si elle sort des cellules (ncd_x*rcut != Ld.x)
     if                ((p.getPosition().x < 0 || p.getPosition().x >= ncd_x*rcut)  ||
     (dimension >= 2 && (p.getPosition().y < 0 || p.getPosition().y >= ncd_y*rcut)) ||
     (dimension >= 3 && (p.getPosition().z < 0 || p.getPosition().z >= ncd_z*rcut))) {
-        cellules[c].partInd.erase(cellules[c].partInd.begin() + i);
+        cellules[c].partInd.erase(cellules[c].partInd.begin() + ind_p);
         return;
     }
 
@@ -140,8 +140,8 @@ void Univers::updateCellPart(int c, int i) {
     if (c == calc_id) return;
     
     //Sinon on la deplace dans la bonne cellule
-    uint ind = cellules[c].partInd[i];
-    cellules[c].partInd.erase(cellules[c].partInd.begin() + i);
+    uint ind = cellules[c].partInd[ind_p];
+    cellules[c].partInd.erase(cellules[c].partInd.begin() + ind_p);
     cellules[calc_id].partInd.push_back(ind);
 }
 
@@ -260,8 +260,8 @@ void Univers::StromerVerlet(float t_end, float delta_t) {
         //Update des cellules des particules
         for (size_t c = 0; c < cellules.size(); c++) {
             //On parcours à l'envers pour éviter les décalages
-            for (auto& i : cellules[c].partInd) {
-                updateCellPart(c, i);
+            for (int ind_p = 0; ind_p < cellules[c].partInd.size(); ind_p++) {
+                updateCellPart(c, ind_p);
             }
         }
 
