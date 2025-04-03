@@ -9,7 +9,7 @@
 
 
 struct Cellule {
-    std::vector<Particule> particules;
+    std::vector<uint> partInd;
     std::vector<Cellule*> voisins;
     Vecteur position;
 };
@@ -29,6 +29,7 @@ class Univers {
         int ncd_x, ncd_y, ncd_z;
         int nb_particules;
 
+        std::vector<Particule> particules;
         std::vector<Cellule> cellules;
 
         //Mersenne twister
@@ -66,11 +67,11 @@ class Univers {
         void printCells();
 
 
-        int getNbParticule() {
-            int somme = 0;
-            for(size_t c = 0; c < cellules.size(); c++) somme += cellules[c].particules.size();
-            return somme;
-        };
+        // int getNbParticule() {
+        //     int somme = 0;
+        //     for(size_t c = 0; c < cellules.size(); c++) somme += cellules[c].particules.size();
+        //     return somme;
+        // };
         
         int getDimension() {return dimension;};
         std::vector<Cellule> getCells() {return cellules;};

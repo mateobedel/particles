@@ -129,12 +129,3 @@ Vecteur operator /(const float f, const Vecteur& v) {
 std::ostream& operator<<(std::ostream& os, const Vecteur& v) {
     return os << v.x << " " << v.y << " " << v.z;
 }
-
-
-Vecteur Vecteur::min(const float f) {
-    return Vecteur(std::min(x, f),std::min(y, f),std::min(z, f));
-}
-
-Vecteur Vecteur::max(const float f) {
-    return Vecteur(std::max(x, f),std::max(y, f),std::max(z, f));
-}
