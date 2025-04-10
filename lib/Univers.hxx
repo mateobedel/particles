@@ -40,10 +40,10 @@ class Univers {
         Univers(int n, int nb_p, Vecteur l, float r, float eps, float sigm);
 
         //Calcule la force d'interaction gravitationelle (0 si i et j sont superposées)
-        Vecteur calcForceInteractionGrav(Cellule& c_i, Cellule& c_j, int id_i, int id_j);
+        Vecteur calcForceInteractionGrav(int i, int j);
 
         //Calcule la force de potentiel (0 si i et j sont superposées)
-        Vecteur calcForceInteractionPot(Cellule& c_i, Cellule& c_j, int i, int j);
+        Vecteur calcForceInteractionPot(int i, int j);
 
         //Calcule les forces de toute les particules de la cellule cell
         void calcCellForces(Cellule& cell);

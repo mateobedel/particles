@@ -146,10 +146,10 @@ void Univers::updateCellPart(int c, int ind_p) {
 }
 
 
-Vecteur Univers::calcForceInteractionPot(Cellule& c_i, Cellule& c_j, int i, int j) {
+Vecteur Univers::calcForceInteractionPot(int i, int j) {
 
-    Particule& pi = particules[c_i.partInd[i]];
-    Particule& pj = particules[c_j.partInd[j]];
+    Particule& pi = particules[i];
+    Particule& pj = particules[j];
 
     Vecteur r_ij = pj.getPosition() - pi.getPosition();;
     float norm_rij = r_ij.norm();
@@ -164,10 +164,10 @@ Vecteur Univers::calcForceInteractionPot(Cellule& c_i, Cellule& c_j, int i, int 
 }
 
 
-Vecteur Univers::calcForceInteractionGrav(Cellule& c_i, Cellule& c_j, int i, int j) {
+Vecteur Univers::calcForceInteractionGrav(int i, int j) {
 
-    Particule& pi = particules[c_i.partInd[i]];
-    Particule& pj = particules[c_j.partInd[j]];
+    Particule& pi = particules[i];
+    Particule& pj = particules[j];
 
     Vecteur r_ij = pj.getPosition() - pi.getPosition();;
     float norm_rij = r_ij.norm();
@@ -196,7 +196,7 @@ void Univers::calcCellForces(Cellule& cell) {
                 if (particules[i].getId() == particules[j].getId()) continue;
 
                 //Calcul de la force entre p_i et ses voisines p_j
-                particules[i].force += calcForceInteractionPot(cell, *cellNeigh, i, j);
+                particules[i].force += calcForceInteractionGrav(i, j);
                                             
             }
         }
@@ -223,7 +223,7 @@ void Univers::StromerVerlet(float t_end, float delta_t) {
     for (size_t c = 0; c < cellules.size(); c++) 
         calcCellForces(cellules[c]);
     
-    //VTKWriter::write("p.vtk", *this);
+    VTKWriter::write("start.vtu", *this);
 
     while (t < t_end) {
 
@@ -268,4 +268,6 @@ void Univers::StromerVerlet(float t_end, float delta_t) {
         
         t += delta_t;
     }
+
+    VTKWriter::write("end.vtu", *this);
 }

@@ -28,16 +28,13 @@ void VTKWriter::writeParticlesData(std::ofstream& file, Univers& univers) {
 
     //Position
     file << "      <Points>\n";
-    file << "        <DataArray name=\"Position\" type=\"Float32\" NumberOfComponents=\"" << univers.getDimension() << "\" format=\"ascii\">\n";
+    file << "        <DataArray name=\"Position\" type=\"Float32\" NumberOfComponents=\"3\" format=\"ascii\">\n";
     
 
     for(size_t i = 0; i < particules.size(); i++) {
-        if (univers.getDimension() == 3) file << particules[i].getPosition();
-        if (univers.getDimension() == 2) file << particules[i].getPosition().x << " " << particules[i].getPosition().y;
-        if (univers.getDimension() == 1) file << particules[i].getPosition().x;
+        file << particules[i].getPosition();
         if (i != particules.size()-1) file << " ";
     }
-
 
     file << "\n";
     file << "        </DataArray>\n";
@@ -46,12 +43,10 @@ void VTKWriter::writeParticlesData(std::ofstream& file, Univers& univers) {
 
     //Vitesse
     file << "      <PointData Vectors=\"vector\">\n";
-    file << "        <DataArray type=\"Float32\" Name=\"Velocity\" NumberOfComponents=\"" << univers.getDimension() << "\" format=\"ascii\">\n";
+    file << "        <DataArray type=\"Float32\" Name=\"Velocity\" NumberOfComponents=\"3\" format=\"ascii\">\n";
     
     for(size_t i = 0; i < particules.size(); i++) {
-        if (univers.getDimension() == 3) file << particules[i].getVitesse();
-        if (univers.getDimension() == 2) file << particules[i].getVitesse().x << " " << particules[i].getVitesse().y;
-        if (univers.getDimension() == 1) file << particules[i].getVitesse().x;
+        file << particules[i].getVitesse();
         if (i != particules.size()-1) file << " "; 
     }
     file << "\n";
