@@ -63,15 +63,19 @@ class Univers {
         //Mets à jour la bonne cellule en fonction de l'indice de la liste d'indices des particules
         void updateCellPart(int c, int ind_p);
 
-        //Affiche toute les particules de toute les cellules (id:Position)
-        void printCells();
+        //Affiche toute les particules 
+        void printParticules();
 
 
         int getNbParticule() {
-            return particules.size();
+            int somme = 0;
+            for(auto& c : cellules) somme += c.partInd.size();
+            return somme;
         };
         
         int getDimension() {return dimension;};
+
+        std::vector<Cellule> getCellules() {return cellules;};
 
         std::vector<Particule> getParticules() {return particules;};
 };

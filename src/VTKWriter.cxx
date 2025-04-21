@@ -24,17 +24,17 @@ void VTKWriter::writeHeader(std::ofstream& file, Univers& univers) {
 
 void VTKWriter::writeParticlesData(std::ofstream& file, Univers& univers) {
 
+    std::vector<Cellule> cellules = univers.getCellules();
     std::vector<Particule> particules = univers.getParticules();
 
     //Position
     file << "      <Points>\n";
     file << "        <DataArray name=\"Position\" type=\"Float32\" NumberOfComponents=\"3\" format=\"ascii\">\n";
     
-
-    for(size_t i = 0; i < particules.size(); i++) {
-        file << particules[i].getPosition();
-        if (i != particules.size()-1) file << " ";
-    }
+    for(auto& c : cellules)
+        for (auto& i : c.partInd)
+            file << particules[i].getPosition() << " ";
+        
 
     file << "\n";
     file << "        </DataArray>\n";

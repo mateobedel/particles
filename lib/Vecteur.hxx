@@ -42,9 +42,6 @@ struct Vecteur {
         Vecteur& operator *=(const float f);
         Vecteur& operator /=(const float f);
 
-        Vecteur min(const float f);
-        Vecteur max(const float f);
-
 };
 
 //Operateurs externe entre scalaire et vecteur (et print)

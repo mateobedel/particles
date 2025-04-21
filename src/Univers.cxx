@@ -52,8 +52,8 @@ Univers::Univers(int n, int nb_p, Vecteur l, float r, float eps, float sigm){
     //Carré rouge
     for(int i = 0; i < 40; i++) {
         for(int j = 0; j < 40; j++) {
-            float ecart = 1.0f/64.0f;
-            float start_x = 8.0f;
+            float ecart = 1.12246204831/sigma;
+            float start_x = 100.0f;
             Particule p = Particule(1, Vecteur(start_x+ecart*i,ecart*j,0), Vecteur(0,10,0));
             addParticle(p);
         }
@@ -62,9 +62,9 @@ Univers::Univers(int n, int nb_p, Vecteur l, float r, float eps, float sigm){
     //Rectangle bleu
     for(int i = 0; i < 160; i++) {
         for(int j = 0; j < 40; j++) {
-            float ecart = 1.0f/64.0f;
-            float start_x = 8.0f;
-            float start_y = 32.0f;
+            float ecart = 1.12246204831/sigma;
+            float start_x = 50.0f;
+            float start_y = 50.0f;
             Particule p = Particule(1, Vecteur(start_x+ecart*(float)(i),start_y+ecart*(float)j,0), Vecteur(0,0,0));
             addParticle(p);
         }
@@ -159,12 +159,13 @@ Vecteur Univers::calcForceInteractionPot(int i, int j) {
 
     float sr6 = std::pow(sigma / norm_rij, 6);
     float force_magnitude = 24.0f * epsilon * sr6 * (1.0f - 2.0f * sr6) / (norm_rij * norm_rij);
-    
-    return r_ij * (-force_magnitude);
+    return r_ij * force_magnitude;
 }
 
 
 Vecteur Univers::calcForceInteractionGrav(int i, int j) {
+
+    constexpr float G = 1;
 
     Particule& pi = particules[i];
     Particule& pj = particules[j];
@@ -175,7 +176,7 @@ Vecteur Univers::calcForceInteractionGrav(int i, int j) {
     if (norm_rij == 0.0f) 
         return Vecteur(0.0f,0.0f,0.0f);
     
-    return r_ij * (pi.getMasse() * pj.getMasse()) / (norm_rij*norm_rij*norm_rij) ;
+    return G * r_ij * (pi.getMasse() * pj.getMasse()) / (norm_rij*norm_rij*norm_rij) ;
 }
 
 
@@ -204,13 +205,11 @@ void Univers::calcCellForces(Cellule& cell) {
 }
 
 
-void Univers::printCells() {
-    for (size_t c = 0; c < cellules.size(); c++) {
-        for (auto& i : cellules[c].partInd) {
-            std::cout << particules[i].getId() << ":" << particules[i].getPosition() << std::endl;
-        }
-    }
-    std::cout << std::endl;
+
+void Univers::printParticules() {
+    for(auto& c : cellules) 
+        for(auto& i : c.partInd)
+            std::cout << particules[i].getPosition() << std::endl;
 }
 
 
@@ -227,7 +226,8 @@ void Univers::StromerVerlet(float t_end, float delta_t) {
 
     while (t < t_end) {
 
-        //printCells();
+        // printParticules();
+        // std::cout << std::endl;
         
         //Calcul des positions
         for (size_t c = 0; c < cellules.size(); c++) {
