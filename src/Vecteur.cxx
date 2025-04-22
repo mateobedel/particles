@@ -7,10 +7,13 @@
 #include "Vecteur.hxx"
 
 
-float Vecteur::norm() {
-    return std::sqrt(x*x + y*y + z*z);
+ float Vecteur::norm() {
+    return std::sqrt(squared_norm());
 }
 
+float Vecteur::squared_norm() {
+    return x*x + y*y + z*z;
+}
 //Operations entre vecteurs :
 
 Vecteur& Vecteur::operator=(const Vecteur& v) {
@@ -19,24 +22,24 @@ Vecteur& Vecteur::operator=(const Vecteur& v) {
     z = v.z;
     return *this;
 }
-Vecteur Vecteur::operator +(const Vecteur& v) {
+Vecteur Vecteur::operator +(const Vecteur& v) const {
     return Vecteur(x+v.x, y+v.y, z+v.z);
 }
 
-Vecteur Vecteur::operator -(const Vecteur& v) {
+Vecteur Vecteur::operator -(const Vecteur& v) const {
     return Vecteur(x-v.x, y-v.y, z-v.z);
 }
 
-Vecteur Vecteur::operator *(const Vecteur& v) {
+Vecteur Vecteur::operator *(const Vecteur& v) const {
     return Vecteur(x*v.x, y*v.y, z*v.z);
 }
 
-Vecteur Vecteur::operator /(const Vecteur& v) {
+Vecteur Vecteur::operator /(const Vecteur& v) const {
     return Vecteur(x/v.x, y/v.y, z/v.z);
 }
 
 //Modifications d'un vecteur
-Vecteur& Vecteur::operator += (const Vecteur& v) {
+Vecteur& Vecteur::operator +=(const Vecteur& v) {
     x += v.x;
     y += v.y;
     z += v.z;

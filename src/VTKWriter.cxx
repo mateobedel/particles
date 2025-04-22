@@ -24,8 +24,8 @@ void VTKWriter::writeHeader(std::ofstream& file, Univers& univers) {
 
 void VTKWriter::writeParticlesData(std::ofstream& file, Univers& univers) {
 
-    std::vector<Cellule> cellules = univers.getCellules();
-    std::vector<Particule> particules = univers.getParticules();
+    const std::vector<Cellule>& cellules = univers.getCellules();
+    const std::vector<Particule>& particules = univers.getParticules();
 
     //Position
     file << "      <Points>\n";

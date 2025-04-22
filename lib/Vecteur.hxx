@@ -14,15 +14,16 @@ struct Vecteur {
         Vecteur(const Vecteur& v) : x(v.x), y(v.y), z(v.z) {}
 
         float norm();
+        float squared_norm();
 
         //Affectation par copie
         Vecteur& operator=(const Vecteur& v);
     
         //Operations entre vecteurs :
-        Vecteur operator +(const Vecteur& v);
-        Vecteur operator -(const Vecteur& v);
-        Vecteur operator *(const Vecteur& v);
-        Vecteur operator /(const Vecteur& v);
+        Vecteur operator +(const Vecteur& v) const;
+        Vecteur operator -(const Vecteur& v) const;
+        Vecteur operator *(const Vecteur& v) const;
+        Vecteur operator /(const Vecteur& v) const;
 
         //Modifications d'un vecteur
         Vecteur& operator += (const Vecteur& v);

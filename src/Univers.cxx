@@ -5,7 +5,7 @@
 #include "VTKWriter.hxx"
 
 
-Univers::Univers(int n, int nb_p, Vecteur l, float r, float eps, float sigm){
+Univers::Univers(int n, int nb_p, Vecteur l, float r, float eps, float sigm, int b_cond){
             
     //Initialisation
     dimension = n;
@@ -14,6 +14,8 @@ Univers::Univers(int n, int nb_p, Vecteur l, float r, float eps, float sigm){
     rcut = r;
     epsilon = eps;
     sigma = sigm;
+    sigma6 = std::pow(sigma, 6);
+    boundary_condition = b_cond;
 
     //Grille des cellules
     ncd_x = (Ld.x/rcut); ncd_y = (Ld.y/rcut); ncd_z = (Ld.z/rcut);
@@ -21,54 +23,6 @@ Univers::Univers(int n, int nb_p, Vecteur l, float r, float eps, float sigm){
     else if (dimension==2) cellules.resize(ncd_x*ncd_y);
     else cellules.resize(ncd_x*ncd_y*ncd_z);
     setupNeighbours();
-
-    //Distribution aléatoire uniforme sur [0,1]
-    std::random_device rd;
-    std::mt19937 mt(rd());
-    std::uniform_real_distribution<float> dist(0.0, 1.0);
-
-
-    // //Generation aléatoire des particules
-    // for (int i = 0; i < nb_particules; i++) {
-    //     float masse = 1.0f;
-    //     Vecteur rdmPos = Vecteur(
-    //         dist(mt)*Ld.x, 
-    //         dimension>1 ? dist(mt)*Ld.y : 0.0f,
-    //         dimension>2 ? dist(mt)*Ld.z : 0.0f
-    //     );
-    //     Vecteur vit = Vecteur(0.0f, 0.0f, 0.0f);
-    //     Particule p = Particule(masse, rdmPos, vit);
-    //     addParticle(p);
-    // }
-
-    //Système solaire
-    // Particule soleil = Particule(1,        10+Vecteur(0,0,0),    Vecteur(0,0,0));
-    // Particule terre = Particule(3.0e-6,    10+Vecteur(0,1,0),    Vecteur(-1,0,0));
-    // Particule jupiter = Particule(9.55e-4, 10+Vecteur(0,5.36,0), Vecteur(-0.425, 0, 0));
-    // addParticle(soleil);
-    // addParticle(terre);
-    // addParticle(jupiter);
-
-    //Carré rouge
-    for(int i = 0; i < 40; i++) {
-        for(int j = 0; j < 40; j++) {
-            float ecart = 1.12246204831/sigma;
-            float start_x = 100.0f;
-            Particule p = Particule(1, Vecteur(start_x+ecart*i,ecart*j,0), Vecteur(0,10,0));
-            addParticle(p);
-        }
-    }
-
-    //Rectangle bleu
-    for(int i = 0; i < 160; i++) {
-        for(int j = 0; j < 40; j++) {
-            float ecart = 1.12246204831/sigma;
-            float start_x = 50.0f;
-            float start_y = 50.0f;
-            Particule p = Particule(1, Vecteur(start_x+ecart*(float)(i),start_y+ecart*(float)j,0), Vecteur(0,0,0));
-            addParticle(p);
-        }
-    }
 }
 
 
@@ -80,7 +34,7 @@ void Univers::addParticle(Particule& p) {
 }
 
 
-int Univers::getCellLinearIndex(int x, int y, int z) {
+int Univers::getCellLinearIndex(int x, int y, int z) const {
     if (dimension==1) return x;
     if (dimension==2) return x + ncd_x * y;
     return x + ncd_x * (y + ncd_y * z);
@@ -125,14 +79,6 @@ void Univers::updateCellPart(int c, int ind_p) {
 
     Particule& p = particules[cellules[c].partInd[ind_p]];
 
-    //Ignorer la particule si elle sort des cellules (ncd_x*rcut != Ld.x)
-    if                ((p.getPosition().x < 0 || p.getPosition().x >= ncd_x*rcut)  ||
-    (dimension >= 2 && (p.getPosition().y < 0 || p.getPosition().y >= ncd_y*rcut)) ||
-    (dimension >= 3 && (p.getPosition().z < 0 || p.getPosition().z >= ncd_z*rcut))) {
-        cellules[c].partInd.erase(cellules[c].partInd.begin() + ind_p);
-        return;
-    }
-
     //Calcul de l'id de cellule en fonction de la position de p
     int calc_id = getCellLinearIndex(p.getPosition().x/rcut, p.getPosition().y/rcut, p.getPosition().z/rcut);
 
@@ -146,59 +92,109 @@ void Univers::updateCellPart(int c, int ind_p) {
 }
 
 
-Vecteur Univers::calcForceInteractionPot(int i, int j) {
+    bool Univers::isPositionOut(const Vecteur& v) const {
 
-    Particule& pi = particules[i];
-    Particule& pj = particules[j];
+        return ((v.x < 0 || v.x >= ncd_x*rcut) ||
+                (dimension >= 2 && (v.y < 0 || v.y >= ncd_y*rcut)) ||
+                (dimension >= 3 && (v.z < 0 || v.z >= ncd_z*rcut)));
 
-    Vecteur r_ij = pj.getPosition() - pi.getPosition();;
-    float norm_rij = r_ij.norm();
+    }
 
-    if (norm_rij == 0.0f) 
-        return Vecteur(0.0f,0.0f,0.0f);
+void Univers::HandleBoundaryConditions(Particule& p, Vecteur& calcPos, int c, int ind_p, int boundary_condition) {
 
-    float sr6 = std::pow(sigma / norm_rij, 6);
-    float force_magnitude = 24.0f * epsilon * sr6 * (1.0f - 2.0f * sr6) / (norm_rij * norm_rij);
-    return r_ij * force_magnitude;
+    switch(boundary_condition) {
+
+        case BOUND_REFLEXION:
+            p.setVitesse(0.0f - p.getVitesse());
+            break;
+
+        case BOUND_ABSORPTION:
+            cellules[c].partInd.erase(cellules[c].partInd.begin() + ind_p);
+            break;
+
+        case BOUND_PERIODIC:
+
+            auto PeriodicMod = [](float pos, float maxPos) {
+                const double result = std::fmod(pos, maxPos);
+                return result < 0.0f ? result + maxPos : result;
+            };
+
+            Vecteur periodicPos = Vecteur(
+                PeriodicMod(calcPos.x, ncd_x*rcut),
+                dimension >= 2 ? PeriodicMod(calcPos.y, ncd_y*rcut) : 0,
+                dimension >= 3 ? PeriodicMod(calcPos.z, ncd_z*rcut) : 0
+            );
+            
+            p.setPosition(periodicPos);
+            break;
+    }
 }
+
+
+    Vecteur Univers::calcForceInteractionPot(int i, int j) {
+
+        Particule& pi = particules[i];
+        Particule& pj = particules[j];
+
+        Vecteur r_ij = pj.getPosition() - pi.getPosition();
+        float r_sq = r_ij.squared_norm();
+
+        if (r_sq < 1e-4) return Vecteur(0.0f,0.0f,0.0f);
+
+        float sr6 = sigma6 / std::pow(r_sq, 3);
+        float force_magnitude = 24.0f * epsilon * sr6 * (1.0f - 2.0f * sr6) / r_sq;
+        return r_ij * force_magnitude;
+    }
 
 
 Vecteur Univers::calcForceInteractionGrav(int i, int j) {
 
-    constexpr float G = 1;
-
     Particule& pi = particules[i];
     Particule& pj = particules[j];
 
-    Vecteur r_ij = pj.getPosition() - pi.getPosition();;
-    float norm_rij = r_ij.norm();
+    Vecteur r_ij = pj.getPosition() - pi.getPosition();
+    float r_sq = r_ij.squared_norm();
 
-    if (norm_rij == 0.0f) 
-        return Vecteur(0.0f,0.0f,0.0f);
-    
-    return G * r_ij * (pi.getMasse() * pj.getMasse()) / (norm_rij*norm_rij*norm_rij) ;
+    if (r_sq < 1e-6) return Vecteur(0.0f,0.0f,0.0f);
+
+    float inv_sqrt_r = 1.0f / std::sqrt(r_sq);
+
+    return r_ij * (pi.getMasse() * pj.getMasse()) * inv_sqrt_r * inv_sqrt_r * inv_sqrt_r;
 }
 
 
-void Univers::calcCellForces(Cellule& cell) {
+void Univers::resetForces() {
+    for (auto& c : cellules) {
+        for (auto& i : c.partInd) {
+            particules[i].force.x = 0.0f;
+            particules[i].force.y = 0.0f;
+            particules[i].force.z = 0.0f;
+        }
+    }
+}
 
-    for (auto& i : cell.partInd) { //Pour toute les particules de cell
-        
-        //On reset la force i
-        particules[i].force.x = 0.0f; particules[i].force.y = 0.0f; particules[i].force.z = 0.0f;
-        
-        for(Cellule* cellNeigh : cell.voisins) { //Pour toutes les cellules voisines
 
-            if ((cellNeigh->position - particules[i].getPosition()).norm() > rcut) 
-                continue;
+void Univers::calcForces() {
 
-            for (auto& j : cellNeigh->partInd) {  //Pour toute les particules des cellules voisines
+    resetForces();
 
-                if (particules[i].getId() == particules[j].getId()) continue;
+    for(auto &cell : cellules) { //Pour toute les cellules
+        for (auto& i : cell.partInd) { //Pour toute les particules des cellules
+            for(Cellule* cellNeigh : cell.voisins) { //Pour toutes les cellules voisines
 
-                //Calcul de la force entre p_i et ses voisines p_j
-                particules[i].force += calcForceInteractionGrav(i, j);
-                                            
+                if ((cellNeigh->position - particules[i].getPosition()).squared_norm() > rcut*rcut) 
+                    continue;
+
+                for (auto& j : cellNeigh->partInd) {  //Pour toute les particules des cellules voisines
+
+                    if (particules[i].getId() >= particules[j].getId()) continue;
+
+                    //Calcul de la force entre p_i et ses voisines p_j
+                    Vecteur forces = calcForceInteractionPot(i,j) + calcForceInteractionGrav(i,j);
+                    particules[i].force += forces;
+                    particules[j].force -= forces;
+                                                
+                }
             }
         }
     }
@@ -219,43 +215,45 @@ void Univers::StromerVerlet(float t_end, float delta_t) {
     float t = 0.0f;
 
     //On calcul les forces initiales des particules
-    for (size_t c = 0; c < cellules.size(); c++) 
-        calcCellForces(cellules[c]);
+    calcForces();
     
     VTKWriter::write("start.vtu", *this);
 
     while (t < t_end) {
 
-        // printParticules();
-        // std::cout << std::endl;
+        printParticules();
+        std::cout << std::endl;
         
         //Calcul des positions
         for (size_t c = 0; c < cellules.size(); c++) {
-            for (auto& i : cellules[c].partInd) {
+            for (int ind_p = 0; ind_p < cellules[c].partInd.size(); ind_p++) {
 
+                int i = cellules[c].partInd[ind_p];
                 particules[i].force_old = particules[i].force;
 
                 Particule& p = particules[i];
                 Vecteur newPosition = p.getPosition() + delta_t*(p.getVitesse() + .5f/p.getMasse()*particules[i].force_old*delta_t);
-                particules[i].setPosition(newPosition);
+
+                //Gérer les conditions aux limites
+                if (isPositionOut(newPosition)) {
+                    HandleBoundaryConditions(p, newPosition, c, ind_p, boundary_condition);
+                } else {
+                    particules[i].setPosition(newPosition);
+                }
                 
             }
         }
 
         //Calcul des vitesses
+        calcForces();
+
         for (size_t c = 0; c < cellules.size(); c++) {
-
-            calcCellForces(cellules[c]);
-
             for (auto& i : cellules[c].partInd) {
-
                 Particule &p = particules[i];
                 Vecteur newVitesse = p.getVitesse() + delta_t*.5f/p.getMasse()*(particules[i].force + particules[i].force_old);
                 particules[i].setVitesse(newVitesse);
             }
         }
-
-        
 
         //Update des cellules des particules
         for (size_t c = 0; c < cellules.size(); c++) {
@@ -265,7 +263,6 @@ void Univers::StromerVerlet(float t_end, float delta_t) {
             }
         }
 
-        
         t += delta_t;
     }
 

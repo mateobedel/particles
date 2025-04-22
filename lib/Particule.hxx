@@ -23,9 +23,9 @@ class Particule {
             id = glob_id++;
         };
 
-        float getMasse() { return masse; }
-        Vecteur& getPosition() { return position; }
-        Vecteur& getVitesse() { return vitesse; }
+        float getMasse() const { return masse; }
+        const Vecteur& getPosition() const { return position; }
+        const Vecteur& getVitesse() const { return vitesse; }
         int getId() const {return id;}
         void setPosition(const Vecteur& newPos) { position = newPos; }
         void setVitesse(const Vecteur& newVit) { vitesse = newVit; }
