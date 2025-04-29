@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Univers.hxx"
 
 class VTKWriter {

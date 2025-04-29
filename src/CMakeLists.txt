@@ -3,6 +3,7 @@ add_library(src STATIC
     Univers.cxx
     Vecteur.cxx
     VTKWriter.cxx
+    Forces.cxx
 )
 
 # Créer l'exécutable MonProjet (avec Main.cxx)

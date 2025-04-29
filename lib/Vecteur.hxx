@@ -15,6 +15,8 @@ struct Vecteur {
 
         float norm();
         float squared_norm();
+        void init(float f);
+        void clamp(Vecteur min, Vecteur max, int dimension);
 
         //Affectation par copie
         Vecteur& operator=(const Vecteur& v);

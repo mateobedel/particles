@@ -7,13 +7,27 @@
 #include "Vecteur.hxx"
 
 
- float Vecteur::norm() {
+float Vecteur::norm() {
     return std::sqrt(squared_norm());
 }
 
 float Vecteur::squared_norm() {
     return x*x + y*y + z*z;
 }
+
+void Vecteur::init(float f) {
+    x = f;
+    y = f;
+    z = f;
+}
+
+void Vecteur::clamp(Vecteur min, Vecteur max, int dimension) {
+    x = std::max(min.x, std::min(x, max.x));
+    if (dimension >= 2) y = std::max(min.y, std::min(y, max.y));
+    if (dimension >= 3) z = std::max(min.z, std::min(z, max.z));
+}
+
+
 //Operations entre vecteurs :
 
 Vecteur& Vecteur::operator=(const Vecteur& v) {

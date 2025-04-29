@@ -25,33 +25,24 @@ class Univers {
         //Constantes de l'univers
         float epsilon;
         float sigma, sigma6;
+        float G;
         int boundary_condition;
 
         //Caractéristiqu de l'univers
         int dimension;
         Vecteur Ld; //Longueur caractéristique
+        Vecteur fLd; //Longueur caractéristique tronquée
         float rcut; //Rayon de coupe
         int ncd_x, ncd_y, ncd_z;
+        
         int nb_particules;
 
         std::vector<Particule> particules;
         std::vector<Cellule> cellules;
 
-        //Mersenne twister
-        std::mt19937 mt;
-
     public:
 
-        Univers(int n, int nb_p, Vecteur l, float r, float eps, float sigm, int b_cond);
-
-        //Calcule la force d'interaction gravitationelle (0 si i et j sont superposées)
-        Vecteur calcForceInteractionGrav(int i, int j);
-
-        //Calcule la force de potentiel (0 si i et j sont superposées)
-        Vecteur calcForceInteractionPot(int i, int j);
-
-
-        void resetForces();
+        Univers(int n, int nb_p, Vecteur l, float r, float eps, float sigm, float grav, int b_cond);
 
         //Calcule les forces de toute les particules de la cellule cell
         void calcForces();
