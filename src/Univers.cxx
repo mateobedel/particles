@@ -111,7 +111,7 @@ void Univers::HandleBoundaryConditions(Particule& p, Vecteur& calcPos, int c, in
             
         case BOUND_REFLEXION: {
 
-            const float r_min = 0.1f; // Distance minimale au mur (éviter division par 0)
+            const float r_min = 0.001f; // Distance minimale au mur (éviter division par 0)
             calcPos.clamp(Vecteur(r_min,r_min,r_min), fLd - r_min, dimension);
             p.setPosition(calcPos);
             break;

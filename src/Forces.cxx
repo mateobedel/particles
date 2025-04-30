@@ -44,24 +44,24 @@ Vecteur Forces::calcForceReflexion(int i, std::vector<Particule>& particules, fl
 
     //Bords dimension x
     if (position.x < r_cut_reflexion) 
-        force.x = calcPotentielReflexion(position.x, sigma, epsilon);
+        force.x += calcPotentielReflexion(position.x, sigma, epsilon);
     else if (position.x  > fLd.x - r_cut_reflexion) 
-        force.x = calcPotentielReflexion(fLd.x - position.x, sigma, epsilon);
+        force.x -= calcPotentielReflexion(fLd.x - position.x, sigma, epsilon);
     
     //Bords dimension y
     if (dimension >= 2) {
         if (position.y < r_cut_reflexion) 
-            force.y = calcPotentielReflexion(position.y, sigma, epsilon);
+            force.y += calcPotentielReflexion(position.y, sigma, epsilon);
         else if (position.y > fLd.y - r_cut_reflexion) 
-            force.y = calcPotentielReflexion(fLd.y - position.y, sigma, epsilon);
+            force.y -= calcPotentielReflexion(fLd.y - position.y, sigma, epsilon);
     }
 
     //Bords dimension z
     if (dimension >= 3) {
         if (position.z < r_cut_reflexion) 
-            force.z = calcPotentielReflexion(position.z, sigma, epsilon);
+            force.z += calcPotentielReflexion(position.z, sigma, epsilon);
         else if (position.z > fLd.z - r_cut_reflexion) 
-            force.z = calcPotentielReflexion(fLd.z - position.z, sigma, epsilon);
+            force.z -= calcPotentielReflexion(fLd.z - position.z, sigma, epsilon);
     }
 
     return force;
