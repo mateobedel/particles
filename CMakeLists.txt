@@ -10,6 +10,7 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")
 # Configuration des sous-répertoires
 add_subdirectory(lib)
 add_subdirectory(src)
+add_subdirectory(test)
 
 # Répertoire de sortie des exécutables
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
