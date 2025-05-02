@@ -7,22 +7,21 @@
 #include "Forces.hxx"
 
 
-Univers::Univers(int n, int nb_p, Vecteur l, float r, float eps, float sigm, float grav, int b_cond){
+Univers::Univers(int n, Vecteur l, float r, float eps, float sigm, float grav, int b_cond){
             
     //Initialisation
     dimension = n;
-    nb_particules = nb_p;
     Ld = l;
     rcut = r;
     G = grav;
     epsilon = eps;
     sigma = sigm;
-    sigma6 = std::pow(sigma, 6);
+    sigma6 = std::pow(sigma, 6); //Précalculé car beaucoup utilisé
     boundary_condition = b_cond;
 
     //Grille des cellules
     ncd_x = (Ld.x/rcut); ncd_y = (Ld.y/rcut); ncd_z = (Ld.z/rcut);
-    fLd = Vecteur(ncd_x,ncd_y,ncd_z)*rcut;
+    fLd = Vecteur(ncd_x,ncd_y,ncd_z)*rcut; //On tronque Ld au cas ou qu'il ne soit pas multiple de rcut
 
     if (dimension==1) cellules.resize(ncd_x);
     else if (dimension==2) cellules.resize(ncd_x*ncd_y);
@@ -53,6 +52,8 @@ void Univers::setupNeighbours() {
     for (int k = 0; k < (dimension >= 3 ? ncd_z : 1); ++k) {
 
         Cellule& cellule = cellules[getCellLinearIndex(i, j, k)];
+
+        //On initialise la positionn des cellules
         cellule.position = Vecteur(
             i*rcut + rcut/2,
             dimension >= 2 ? j*rcut + rcut/2 : 0,
@@ -82,10 +83,12 @@ void Univers::updateCellPart(int c, int ind_p) {
 
     Particule& p = particules[cellules[c].partInd[ind_p]];
 
+    //En théorie, cette condition n'est jamais sensée être réalisée
+    //Cependant il peut avoir des dépassement de float dans HandleBoundaryConditions si le pas de temps est trop grand
+    if (isPositionOut(p.getPosition())) return;
+
     //Calcul de l'id de cellule en fonction de la position de p
     int calc_id = getCellLinearIndex(p.getPosition().x/rcut, p.getPosition().y/rcut, p.getPosition().z/rcut);
-
-    //std::cout << "Pos out : " << p.getPosition() << " " <<  calc_id << "/" << cellules.size() << std::endl;
 
     //Si la particule n'a pas changé de cellules
     if (c == calc_id) return;
@@ -98,11 +101,9 @@ void Univers::updateCellPart(int c, int ind_p) {
 
 
     bool Univers::isPositionOut(const Vecteur& v) const {
-
         return ((v.x < 0 || v.x >= fLd.x) ||
                 (dimension >= 2 && (v.y < 0 || v.y >= fLd.y)) ||
                 (dimension >= 3 && (v.z < 0 || v.z >= fLd.z)));
-
     }
 
 void Univers::HandleBoundaryConditions(Particule& p, Vecteur& calcPos, int c, int ind_p, int boundary_condition) {
@@ -111,7 +112,9 @@ void Univers::HandleBoundaryConditions(Particule& p, Vecteur& calcPos, int c, in
             
         case BOUND_REFLEXION: {
 
-            const float r_min = 0.001f; // Distance minimale au mur (éviter division par 0)
+            // Distance minimale au mur (éviter division par 0)
+            //Cette distance affecte beaucoup le résultat de la réfléxion si le pas de temps est trop grand
+            const float r_min = 0.01f; 
             calcPos.clamp(Vecteur(r_min,r_min,r_min), fLd - r_min, dimension);
             p.setPosition(calcPos);
             break;
@@ -119,7 +122,8 @@ void Univers::HandleBoundaryConditions(Particule& p, Vecteur& calcPos, int c, in
             
         case BOUND_ABSORPTION: {
             if (isPositionOut(calcPos))
-                cellules[c].partInd.erase(cellules[c].partInd.begin() + ind_p);
+                cellules[c].partInd.erase(cellules[c].partInd.begin() + ind_p); //Effacer la particule des cellules
+            p.setPosition(calcPos);
             break;
         }
 
@@ -127,6 +131,7 @@ void Univers::HandleBoundaryConditions(Particule& p, Vecteur& calcPos, int c, in
 
             if (!isPositionOut(calcPos)) return;
 
+            //Fonction qui calcule le modulo périodique de la position
             auto PeriodicMod = [](float pos, float maxPos) {
                 const double result = std::fmod(pos, maxPos);
                 return result < 0.0f ? result + maxPos : result;
@@ -151,11 +156,13 @@ void Univers::calcForces() {
         for (auto& i : cell.partInd) { //Pour toute les particules des cellules
             for(Cellule* cellNeigh : cell.voisins) { //Pour toutes les cellules voisines
 
+                //Condition de distances
                 if ((cellNeigh->position - particules[i].getPosition()).squared_norm() > rcut*rcut) 
                     continue;
 
                 for (auto& j : cellNeigh->partInd) {  //Pour toute les particules des cellules voisines
 
+                    //Optimisation pour réduire la complexité par deux
                     if (particules[i].getId() >= particules[j].getId()) continue;
 
                     //Calcul de la force entre p_i et ses voisines p_j
@@ -197,9 +204,6 @@ void Univers::StromerVerlet(float t_end, float delta_t) {
     VTKWriter::write("start.vtu", *this);
 
     while (t < t_end) {
-
-        printParticules();
-        std::cout << std::endl;
 
         //Calcul des positions
         for (size_t c = 0; c < cellules.size(); c++) {

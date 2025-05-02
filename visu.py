@@ -4,7 +4,7 @@ import matplotlib.animation as animation
 
 # Paramètres du domaine
 Ld_x = 250
-Ld_y = 100
+Ld_y = 180
 Ld_z = 0
 
 # Lecture du fichier de données

@@ -13,3 +13,11 @@ add_subdirectory(src)
 
 # Répertoire de sortie des exécutables
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
+
+# Génération de la doc
+find_package(Doxygen REQUIRED)
+
+add_custom_target(doc
+    COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_SOURCE_DIR}/doc/Doxyfile
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+)
