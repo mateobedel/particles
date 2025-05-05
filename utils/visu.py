@@ -12,7 +12,7 @@ def parse_data(filename):
     with open(filename, 'r') as f:
         content = f.read().strip()
     
-    time_steps = content.split('\n\n')  # Séparation par pas de temps
+    time_steps = content.split('\n\n')
     all_steps = []
     
     for step in time_steps:
@@ -26,7 +26,6 @@ def parse_data(filename):
     
     return all_steps
 
-# Configuration de l'animation
 fig = plt.figure(figsize=(10, 6))
 ax = fig.add_subplot(111, projection='3d')
 
@@ -55,8 +54,8 @@ def update(frame):
     ax.set_title(f't =  {frame}')
     return ax,
 
-# Chargement des données et lancement de l'animation
-data = parse_data('p.data')  # Remplacez par votre fichier
+# Chargement des données
+data = parse_data('p.data') 
 
 # Création de l'animation
 ani = animation.FuncAnimation(fig, update, 
