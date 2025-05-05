@@ -49,6 +49,7 @@ class Univers {
         std::vector<Particule> particules;  ///< Liste des particules
         std::vector<Cellule> cellules;      ///< Liste des cellules
 
+        int vtkNumber; ///< Nombre de fichier vtk à générer (0 par défault)
 
     public:
 
@@ -64,7 +65,7 @@ class Univers {
          * @param grav Constante gravitationnelle G.
          * @param b_cond Condition aux limites (BOUND_*).
          */
-        Univers(int n, Vecteur l, float r, float eps, float sigm, float grav, int b_cond);
+        Univers(int n, Vecteur l, float r, float eps, float sigm, float grav, int b_cond, int nb_vtk=0);
 
         /**
          * @brief Calcule toutes les forces de toutes les particules.
@@ -158,4 +159,7 @@ class Univers {
          * @return Les particules.
          */
         const std::vector<Particule>& getParticules() const {return particules;};
+
 };
+
+

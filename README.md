@@ -50,7 +50,7 @@ Après avoir implémenté l’algorithme de Strömer-Verlet pour la simulation d
 
 Nous avons programmé un petit programme python (`utils/visu.py`), qui affiche l'évolution de nos simulations au cours du temps, en prenant en entrée les données des positions des particules, permettant la visualisation de la simulation : 
 
-![Système solaire](utils/readme_img/système_solaire.png)
+![Système solaire](utils/readme_img/systeme_solaire.png)
 Orbite de deux planètes autour du soleil.
 
 ## Lab 3

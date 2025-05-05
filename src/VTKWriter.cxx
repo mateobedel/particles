@@ -1,6 +1,9 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <sstream>
+#include <iomanip>
+#include <algorithm> 
 
 #include "VTKWriter.hxx"
 
@@ -86,4 +89,50 @@ void VTKWriter::write(const std::string& filename, Univers& univers) {
     }
 
     writeHeader(file, univers);
+}
+
+int VTKWriter::readVTKNumber(int argc, char* argv[]) {
+
+    int nb_vtk = 0;  
+
+    for (int i = 1; i < argc; ++i) {
+        std::string arg = argv[i];
+        const std::string prefix = "-nb_vtk=";
+        if (arg.find(prefix) == 0) {
+            int val = std::atoi(arg.substr(prefix.size()).c_str());
+            if (val < 0) std::cerr << "Erreur : -nb_vtk doit être >= 0" << std::endl;
+            else nb_vtk = val;
+            
+        }
+    }
+    return nb_vtk;
+}
+    
+
+
+std::vector<int> VTKWriter::genOutputSteps(int vtkNumber, int steps) {
+    std::vector<int> outSteps;
+
+    if (vtkNumber == 1) {
+        outSteps.push_back(0);
+    } else {
+        outSteps.reserve(vtkNumber);
+        for (int k = 0; k < vtkNumber; ++k) {
+            outSteps.push_back(k * (steps - 1) / (vtkNumber - 1));
+        }
+    }
+    return outSteps;
+}
+
+
+void VTKWriter::writeOnOutSteps(int step, float t, const std::vector<int>& outSteps, Univers& u) {
+    
+    static int nextOut = 0;
+
+    if (nextOut < (int)outSteps.size() && step == outSteps[nextOut]) {
+        std::ostringstream time;
+        time << nextOut;
+        write("sim_" + time.str() + ".vtu", u);
+        nextOut++;
+    }
 }

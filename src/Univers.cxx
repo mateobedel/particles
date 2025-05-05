@@ -3,11 +3,12 @@
 #include <iostream>
 #include <array>
 
+
 #include "VTKWriter.hxx"
 #include "Forces.hxx"
 
 
-Univers::Univers(int n, Vecteur l, float r, float eps, float sigm, float grav, int b_cond){
+Univers::Univers(int n, Vecteur l, float r, float eps, float sigm, float grav, int b_cond, int nb_vtk){
             
     //Initialisation
     dimension = n;
@@ -18,6 +19,7 @@ Univers::Univers(int n, Vecteur l, float r, float eps, float sigm, float grav, i
     sigma = sigm;
     sigma6 = std::pow(sigma, 6); //Précalculé car beaucoup utilisé
     boundary_condition = b_cond;
+    vtkNumber = nb_vtk;
 
     //Grille des cellules
     ncd_x = (Ld.x/rcut); ncd_y = (Ld.y/rcut); ncd_z = (Ld.z/rcut);
@@ -198,10 +200,14 @@ void Univers::StromerVerlet(float t_end, float delta_t) {
 
     float t = 0.0f;
 
+    //Variables d'étapes pour la génération des fichiers VTK
+    int step = 0, steps = (int)(t_end / delta_t);
+    std::vector<int> outSteps = VTKWriter::genOutputSteps(vtkNumber, steps); 
+
+
     //On calcul les forces initiales des particules
     calcForces();
     
-    VTKWriter::write("start.vtu", *this);
 
     while (t < t_end) {
 
@@ -243,7 +249,11 @@ void Univers::StromerVerlet(float t_end, float delta_t) {
             }
         }
 
+        //Ecriture des fichier vtk
+        VTKWriter::writeOnOutSteps(step, t, outSteps, *this);
+
+        
         t += delta_t;
+        step++;
     }
-    VTKWriter::write("end.vtu", *this);
 }

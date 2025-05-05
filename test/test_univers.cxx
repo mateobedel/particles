@@ -5,14 +5,14 @@
 
 // Teste l'initialisation correcte d'un univers 3D et la création de cellules.
 TEST(UniversTest, InitialisationCorrecte3D) {
-    Univers u(3, 0, Vecteur(10, 10, 10), 1.0f, 1.0f, 1.0f, 1.0f, BOUND_REFLEXION);
+    Univers u(3, Vecteur(10, 10, 10), 1.0f, 1.0f, 1.0f, 1.0f, BOUND_REFLEXION);
     EXPECT_EQ(u.getDimension(), 3);
     EXPECT_GT(u.getCellules().size(), 0);
 }
 
 // Vérifie que la particule est ajoutée dans la bonne cellule.
 TEST(UniversTest, AddParticleToCorrectCell) {
-    Univers u(2, 0, Vecteur(10, 10, 0), 2.0f, 1.0f, 1.0f, 1.0f, BOUND_REFLEXION);
+    Univers u(2, Vecteur(10, 10, 0), 2.0f, 1.0f, 1.0f, 1.0f, BOUND_REFLEXION);
     Particule p(1.0f, Vecteur(1, 1, 0), Vecteur(0,0,0));
     u.addParticle(p);
 
@@ -26,7 +26,7 @@ TEST(UniversTest, AddParticleToCorrectCell) {
 
 // Vérifie que la réflexion sur les bords repositionne correctement une particule hors limite.
 TEST(UniversTest, ReflexionBoundary) {
-    Univers u(2, 0, Vecteur(10, 10, 0), 1.0f, 1.0f, 1.0f, 1.0f, BOUND_REFLEXION);
+    Univers u(2, Vecteur(10, 10, 0), 1.0f, 1.0f, 1.0f, 1.0f, BOUND_REFLEXION);
     Particule p(1.0f, Vecteur(-1, 5, 0), Vecteur(0,0,0));
     Vecteur pos = p.getPosition();
     u.addParticle(p);
@@ -36,7 +36,7 @@ TEST(UniversTest, ReflexionBoundary) {
 
 // Vérifie que les forces calculées entre deux particules sont bien opposées.
 TEST(UniversTest, CalcForcesOpposees) {
-    Univers u(2, 0, Vecteur(10, 10, 0), 5.0f, 1.0f, 1.0f, 1.0f, BOUND_REFLEXION);
+    Univers u(2,  Vecteur(10, 10, 0), 5.0f, 1.0f, 1.0f, 1.0f, BOUND_REFLEXION);
     Particule p1(1.0f, Vecteur(2.5, 2.5, 0), Vecteur(0, 0, 0));
     Particule p2(2.0f, Vecteur(3.0, 2.5, 0), Vecteur(0, 0, 0));
     u.addParticle(p1);
@@ -55,7 +55,7 @@ TEST(UniversTest, CalcForcesOpposees) {
 
 // Vérifie que Stromer-Verlet déplace effectivement la particule sur une petite étape de temps.
 TEST(UniversTest, StromerVerletDeplaceParticules) {
-    Univers u(2, 0, Vecteur(10, 10, 0), 5.0f, 1.0f, 1.0f, 1.0f, BOUND_REFLEXION);
+    Univers u(2, Vecteur(10, 10, 0), 5.0f, 1.0f, 1.0f, 1.0f, BOUND_REFLEXION);
     Particule p(1.0f, Vecteur(2,2,0), Vecteur(1,0,0));
     u.addParticle(p);
 
@@ -71,7 +71,7 @@ TEST(UniversTest, StromerVerletDeplaceParticules) {
 
 TEST(UniversTest, OrbitesStablesSystemeSolaireSimplifie) {
 
-    Univers u = Univers(2, 10000, Vecteur(250.0f,100.0f,0.0f), 2.5, 1.0f, 1.0f, 1, BOUND_REFLEXION);
+    Univers u = Univers(2, Vecteur(250.0f,100.0f,0.0f), 2.5, 1.0f, 1.0f, 1, BOUND_REFLEXION);
 
     // Système solaire simplifié (unité de distance centrée à 10, masses réduites)
     Particule soleil = Particule(1,        10 + Vecteur(0, 0, 0),    Vecteur(0, 0, 0));
