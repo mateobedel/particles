@@ -13,6 +13,8 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(googletest)
 
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-error")
+
 # Définir les répertoires d'includes communs
 set(PROJECT_INCLUDES
     ${PROJECT_SOURCE_DIR}/lib
@@ -20,14 +22,14 @@ set(PROJECT_INCLUDES
 )
 
 # Créer l'exécutable pour test_vecteur
-add_executable(test_vecteur test_vecteur.cxx)
-target_include_directories(test_vecteur PRIVATE ${PROJECT_INCLUDES})
-target_link_libraries(test_vecteur gtest_main src)
+add_executable(collision collision.cxx)
+target_include_directories(collision PRIVATE ${PROJECT_INCLUDES})
+target_link_libraries(collision gtest_main src)
 
 # Créer l'exécutable pour test_univers
-add_executable(test_univers test_univers.cxx)
-target_include_directories(test_univers PRIVATE ${PROJECT_INCLUDES})
-target_link_libraries(test_univers gtest_main src)
+add_executable(systemesolaire systemesolaire.cxx)
+target_include_directories(systemesolaire PRIVATE ${PROJECT_INCLUDES})
+target_link_libraries(systemesolaire gtest_main src)
 
 target_compile_options(gtest PRIVATE -w)
 
@@ -35,5 +37,5 @@ target_compile_options(gtest PRIVATE -w)
 enable_testing()
 
 include(GoogleTest)
-gtest_discover_tests(test_vecteur)
-gtest_discover_tests(test_univers)
+gtest_discover_tests(collision)
+gtest_discover_tests(systemesolaire)
