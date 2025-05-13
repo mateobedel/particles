@@ -7,8 +7,8 @@ TEST(UniversTest, CollisionGroupesParticules) {
     float sigma = 1.0f;
     float epsilon = 5.0f;
 
-    // Univers 2D, boîte de taille 250x100, 10000 particules max
-    Univers univ = Univers(10000, Vecteur(250.0f, 100.0f, 0.0f), 2.5f, epsilon, sigma, 1.0f, BOUND_REFLEXION);
+    // Univers 2D,  taille 250x100, 10000 particules max
+    Univers univ = Univers(Vecteur(250.0f, 100.0f, 0.0f), 2.5f, epsilon, sigma, 1.0f, BOUND_REFLEXION);
 
 
     // Ajout du carré rouge

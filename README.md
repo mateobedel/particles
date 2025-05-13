@@ -1,28 +1,28 @@
 # Simulation de particules
 
-Ce projet simule des particules soumises à des interactions gravitationnelles et à des conditions aux limites.
+Ce projet simule des particules soumises à des forces et des potentiels.
 
-## Structure du code
 
-- `lib/` : headers (`.hxx`)
-- `src/` : implémentations (`.cxx`)
-- `doc/` : configuration et documentation Doxygen
-
-## Principales classes
-
-- `Particule` : représente une particule dans l’univers
-- `Univers` : contient et met à jour l’état de toutes les particules
-- `Forces` : fournit les fonctions de calcul des forces
-- `VTKWriter` : écrit les sorties au format VTK
-
-## Compilation
+## Compilation &  éxécution
 
 ```bash
 mkdir build && cd build
 cmake ..
 make
+./particules
+``` 
+
+Création de fichiers VTK en sortie
+```bash
+./particules -nb_vtk=10
+``` 
+
+Documentation
+```bash
 make doc
 ``` 
+
+
 
 
 ## Lab 2
@@ -51,6 +51,7 @@ Après avoir implémenté l’algorithme de Strömer-Verlet pour la simulation d
 Nous avons programmé un petit programme python (`utils/visu.py`), qui affiche l'évolution de nos simulations au cours du temps, en prenant en entrée les données des positions des particules, permettant la visualisation de la simulation : 
 
 ![Système solaire](utils/readme_img/systeme_solaire.png)
+
 Orbite de deux planètes autour du soleil.
 
 ## Lab 3
@@ -59,6 +60,9 @@ On implémente une classe vecteur représentant un vecteur en 3 dimensions.
 Pour représenter les autres dimensions, on fait le choix de laisser les autres composantes à 0 pour simplifier le code.
 
 La création d'un template ```Vecteur<dimension>``` aurait était possible, mais nous avons préféré de garder une structure fichier `.cxx/.hxx` pour un code plus clair et organisé, au lieu de tout définir dans les header comme les templates l'aurait obligé.
+
+![Système solaire](utils/readme_img/vecteur.png)
+
 
 
 La compléxité de l'initialisation de l'Univers contenant les particules n'est pas particulièrement élevé.
@@ -75,6 +79,9 @@ Pour diviser la complexité par deux, on utilise la relation $F_{i,j} = -F_{j,i}
 ## Lab 4
 
 Pour optimiser les performances, on discrétise l'espace en une grille de cellules de longueur caractéristique $r_{cut}$, et on limite les interactions au voisinnage des cellules.
+
+![Système solaire](utils/readme_img/cellule.png)
+
 
 On définit aussi une nouvelle force à l'aide du potentiel de Lennard-Jones.
 
@@ -109,7 +116,12 @@ Le temps d'éxécutions de chaque méthode est très faible mais leur nombre d'a
 
 ## Lab 5
 
+### Tests
+
 TODO : Parler des test
+
+
+### Affichage de la simulation
 
 On peut préciser en paramètre de compilation : 
 
@@ -117,18 +129,38 @@ On peut préciser en paramètre de compilation :
 ./particules nb_vtu=10
 ```
 
-avec ```nb_vtu > 2```, cette commande généra 10 fichiers VTK, à temps régulier dans la simulation, en appelant une méthode permettant d'écrire ces fichiers.
+avec ```nb_vtu > 2```, cette commande généra 10 fichiers VTK, à temps régulier, du début jusqu' à la fin de la la simulation, en appelant une méthode dans `VTKWriter.h` permettant d'écrire ces fichiers .
 
 Ces fichiers pourront être ouvert avec Paraview et permettent la visualisation des particules dans la simulation.
 
-Exemple de la visualisation de la simulation `demo/collision_1` : 
+Visualisation de la simulation `demo/collision_1.cpp` : 
 
 
 ![Colision entre deux objets](utils/readme_img/collision_1b.png)
 
 
-Le problème d'utiliser des pas de temps faible est que la simulation est beaucoup moins précise, des pas de temps trop élevé font explosé certaines valeurs ce qui mène à des comportements irréalistes dans la simulation.
+
 
 ## Lab 6
 
-TODO
+Les conditions aux limites sont choisissable via le constructeur de Univers :BOUND_REFLEXION, BOUND_ABSORPTION, BOUND_PERIODIC.
+
+La condition de réfléxion est définitivement la plus conséquente en terme de calcul et de temps d'exécution. Pour éviter que les floats explosent lors du calcul du potentiel, on fixe une distance minimale  aux murs $r_{min}$ auquel la position de la particule est clamps.
+
+Quand le pas de simulation est trop grand, les particules accumulent de la vitesse dans le potentiel de réfléxion et atteignent de très grandes vitesses qui les font rebondir d'un mur à un autre presque instantanément, donnant l'impression que certaines particules sont bloquées sur le mur. 
+
+
+
+Visualisation de la simulation `demo/collision_2.cpp` : 
+
+![Colision entre deux objets](utils/readme_img/collision_2.png)
+
+## Problèmes de la simulation
+
+Utiliser des pas de temps elevé rend la simulation est beaucoup moins précise, des pas de temps trop élevé font explosé certaines valeurs ce qui mène à des comportements irréalistes dans la simulation, amplifié par l'utilisation de float pour stocké les valeurs.
+
+Le fait d'avoir utiliser des Vecteurs avec 3 composantes meme pour représenter des vecteurs de dimensions inférieur (au lieu d'utiliser des template) coûte en performance, des conditions doivent être vérifier à chaque itérations.
+
+La condition de réfléxion ne fonctionne pas très bien, comme mentionné précedemment.
+
+Dans notre simulation nous n'avons pas eu le temps d'implémenter la limite de la divergence de la vitesse et un méchanisme de gestion d'erreur.
