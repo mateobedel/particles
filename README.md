@@ -12,12 +12,12 @@ make
 ./particules
 ``` 
 
-Création de fichiers VTK en sortie
+Création de fichiers VTK en sortie :
 ```bash
 ./particules -nb_vtk=10
 ``` 
 
-Documentation
+Documentation :
 ```bash
 make doc
 ``` 
@@ -118,7 +118,52 @@ Le temps d'éxécutions de chaque méthode est très faible mais leur nombre d'a
 
 ### Tests
 
-TODO : Parler des test
+
+
+
+
+
+Le projet utilise **GoogleTest** pour valider les fonctionnalités des principales classes, notamment `Vecteur`, `Univers` et `Particule`. Deux fichiers de test sont inclus :
+
+
+
+
+
+#### 1 - `test_vecteur.cxx` :
+
+
+
+Ce fichier teste en détail les opérations de la classe `Vecteur`, essentielle aux calculs vectoriels de la simulation :
+
+
+- Norme : Vérifie que `v.norm()` retourne la bonne longueur.
+
+- Opérateurs :
+
+  - `+`, `-`, `*`, `/` entre vecteurs
+
+  - Opérations composées (`+=`, `-=`, `*=`, `/=`)
+
+  - Opérations avec scalaires (`v + 2.0f`, `v * 2.0f`)
+
+- Assignation : Vérifie que la copie de vecteur est correcte.
+
+Ces tests assurent la fiabilité des opérations fondamentales utilisées dans tous les calculs de position et de force.
+
+
+#### 2 - `test_univers.cxx` :
+
+Ce fichier teste les fonctionnalités principales de la classe `Univers`, qui représente l’espace de simulation :
+
+- Initialisation : Création d’un univers 2D ou 3D avec ses cellules internes.
+
+- Ajout de particules : Vérifie qu’une particule est ajoutée dans la cellule correcte.
+
+- Calcul de forces : Vérifie que les forces calculées entre deux particules sont opposées, selon le principe d’action-réaction.
+
+- Störmer-Verlet : Vérifie qu’une particule évolue dans le temps lorsque l’intégrateur numérique est appliqué.
+
+Il suffit d'exécuter l'exécutable approprié dans le dossier `build/test` pour lancer les tests.
 
 
 ### Affichage de la simulation
@@ -126,10 +171,10 @@ TODO : Parler des test
 On peut préciser en paramètre de compilation : 
 
 ```shell
-./particules nb_vtu=10
+./particules -nb_vtk=10
 ```
 
-avec ```nb_vtu > 2```, cette commande généra 10 fichiers VTK, à temps régulier, du début jusqu' à la fin de la la simulation, en appelant une méthode dans `VTKWriter.h` permettant d'écrire ces fichiers .
+Cette commande généra 10 fichiers VTK, à temps régulier, du début jusqu' à la fin de la la simulation, en appelant une méthode dans `VTKWriter.h` permettant d'écrire ces fichiers .
 
 Ces fichiers pourront être ouvert avec Paraview et permettent la visualisation des particules dans la simulation.
 
@@ -145,7 +190,7 @@ Visualisation de la simulation `demo/collision_1.cpp` :
 
 Les conditions aux limites sont choisissable via le constructeur de Univers :BOUND_REFLEXION, BOUND_ABSORPTION, BOUND_PERIODIC.
 
-La condition de réfléxion est définitivement la plus conséquente en terme de calcul et de temps d'exécution. Pour éviter que les floats explosent lors du calcul du potentiel, on fixe une distance minimale  aux murs $r_{min}$ auquel la position de la particule est clamps.
+La condition de réfléxion est définitivement la plus conséquente en terme de calcul et de temps d'exécution. Pour éviter que les floats explosent lors du calcul du potentiel, on fixe une distance minimale  aux murs $r_{min}$ auquel la position de la particule est clamp.
 
 Quand le pas de simulation est trop grand, les particules accumulent de la vitesse dans le potentiel de réfléxion et atteignent de très grandes vitesses qui les font rebondir d'un mur à un autre presque instantanément, donnant l'impression que certaines particules sont bloquées sur le mur. 
 
@@ -155,7 +200,7 @@ Visualisation de la simulation `demo/collision_2.cpp` :
 
 ![Colision entre deux objets](utils/readme_img/collision_2.png)
 
-## Problèmes de la simulation
+## Problèmes/limites de la simulation
 
 Utiliser des pas de temps elevé rend la simulation est beaucoup moins précise, des pas de temps trop élevé font explosé certaines valeurs ce qui mène à des comportements irréalistes dans la simulation, amplifié par l'utilisation de float pour stocké les valeurs.
 

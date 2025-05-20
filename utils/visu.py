@@ -3,8 +3,8 @@ from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.animation as animation
 
 # Paramètres du domaine
-Ld_x = 250
-Ld_y = 180
+Ld_x = 80
+Ld_y = 80
 Ld_z = 0
 
 # Lecture du fichier de données
@@ -55,7 +55,7 @@ def update(frame):
     return ax,
 
 # Chargement des données
-data = parse_data('p.data') 
+data = parse_data('utils/p.data') 
 
 # Création de l'animation
 ani = animation.FuncAnimation(fig, update, 

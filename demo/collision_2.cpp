@@ -9,7 +9,7 @@ int main(int argc, char* argv[]) {
     //Paramètres
     float sigma = 1.0f;
     float epsilon = 1.0f;
-    float G = -12.0f;
+    float G = 0.0f;
 
     //Lecture des arguments
     int nb_vtk = VTKWriter::readVTKNumber(argc, argv);

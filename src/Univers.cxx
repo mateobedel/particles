@@ -180,8 +180,8 @@ void Univers::calcForces() {
                 particules[i].addForce(Forces::calcForceReflexion(i, particules, sigma, epsilon, fLd, dimension));
 
             //Potentiel gravitationnel
-            // if (dimension >= 2)
-            //     particules[i].addForce(Vecteur(0.0f,Forces::calcPotentielGravitationnel(particules[i].getMasse(), G), 0.0f));
+            if (dimension >= 2)
+                particules[i].addForce(Vecteur(0.0f,Forces::calcPotentielGravitationnel(particules[i].getMasse(), G), 0.0f));
         }
     }
 }

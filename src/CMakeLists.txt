@@ -24,4 +24,4 @@ target_include_directories(particules PRIVATE
     ${CMAKE_SOURCE_DIR}/src
 )
 
-set_target_properties(particules PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
+set_target_properties(particules PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})

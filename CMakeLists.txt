@@ -11,10 +11,9 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")
 add_subdirectory(lib)
 add_subdirectory(src)
 add_subdirectory(test)
-add_subdirectory(demo)
 
 # Répertoire de sortie des exécutables
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 # Génération de la doc
 find_package(Doxygen REQUIRED)
