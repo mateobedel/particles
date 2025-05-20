@@ -50,7 +50,7 @@ Après avoir implémenté l’algorithme de Strömer-Verlet pour la simulation d
 
 Nous avons programmé un petit programme python (`utils/visu.py`), qui affiche l'évolution de nos simulations au cours du temps, en prenant en entrée les données des positions des particules, permettant la visualisation de la simulation : 
 
-![Système solaire](utils/readme_img/systeme_solaire.png)
+![Système solaire](utils/readme_img/systeme_solaire.jpg)
 
 Orbite de deux planètes autour du soleil.
 
@@ -61,7 +61,7 @@ Pour représenter les autres dimensions, on fait le choix de laisser les autres 
 
 La création d'un template ```Vecteur<dimension>``` aurait était possible, mais nous avons préféré de garder une structure fichier `.cxx/.hxx` pour un code plus clair et organisé, au lieu de tout définir dans les header comme les templates l'aurait obligé.
 
-![Système solaire](utils/readme_img/vecteur.png)
+![Système solaire](utils/readme_img/vecteur.jpg)
 
 
 
@@ -80,14 +80,14 @@ Pour diviser la complexité par deux, on utilise la relation $F_{i,j} = -F_{j,i}
 
 Pour optimiser les performances, on discrétise l'espace en une grille de cellules de longueur caractéristique $r_{cut}$, et on limite les interactions au voisinnage des cellules.
 
-![Système solaire](utils/readme_img/cellule.png)
+![Système solaire](utils/readme_img/cellule.jpg)
 
 
 On définit aussi une nouvelle force à l'aide du potentiel de Lennard-Jones.
 
 On créer aussi une simulation de collision entre deux objects, disponbible dans `demo/collision_1.cxx`.
 
-![Colision entre deux objets](utils/readme_img/collision_1.png)
+![Colision entre deux objets](utils/readme_img/collision_1.jpg)
 
 Après ces optimisations le temps de calculs reste elevé, dans cette simulation : 
 
@@ -181,7 +181,7 @@ Ces fichiers pourront être ouvert avec Paraview et permettent la visualisation 
 Visualisation de la simulation `demo/collision_1.cpp` : 
 
 
-![Colision entre deux objets](utils/readme_img/collision_1b.png)
+![Colision entre deux objets](utils/readme_img/collision_1b.jpg)
 
 
 
@@ -198,7 +198,7 @@ Quand le pas de simulation est trop grand, les particules accumulent de la vites
 
 Visualisation de la simulation `demo/collision_2.cpp` : 
 
-![Colision entre deux objets](utils/readme_img/collision_2.png)
+![Colision entre deux objets](utils/readme_img/collision_2.jpg)
 
 ## Problèmes/limites de la simulation
 
